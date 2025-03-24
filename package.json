@@ -1,6 +1,6 @@
 {
   "name": "webpack-style-overlap-detector",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Webpack plugin to detect CSS selector conflicts in your project. ",
   "keywords": [
     "css",

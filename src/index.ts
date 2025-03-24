@@ -24,7 +24,7 @@ export class StyleOverlapDetector {
                 stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE
             }, (assets) => {
                 const cssFiles = Object.keys(assets).filter((asset) => asset.endsWith('.css'));
-                const sources = cssFiles.map((file) => assets[file]);
+                const sources = cssFiles.map((file) => assets[file].source().toString());
 
                 const duplicates = this._analyzer.analyze(sources.join('\n'));
 
