@@ -28,4 +28,35 @@ describe("CSS Analyzer", () => {
 
         expect(result.length).toBe(0);
     });
+
+    test("Detect nested selectors", () => {
+        const cssCode = `
+      .box .btn { color: red; }
+      .box .btn { color: blue; }
+    `;
+        const result = new StyleOverlapAnalyzer({}).analyze(cssCode);
+
+        expect(result.length).toBe(1);
+    });
+
+    test("Ignore nested overlap", () => {
+        const cssCode = `
+      .btn { color: red; }
+      .box .btn { color: blue; }
+    `;
+        const result = new StyleOverlapAnalyzer({}).analyze(cssCode);
+
+        expect(result.length).toBe(0);
+    });
+
+    test("Detect multiple selectors", () => {
+        const cssCode = `
+      .box .btn,
+      .container { color: red; }
+      .box .btn { color: blue; }
+    `;
+        const result = new StyleOverlapAnalyzer({}).analyze(cssCode);
+
+        expect(result.length).toBe(1);
+    });
 });

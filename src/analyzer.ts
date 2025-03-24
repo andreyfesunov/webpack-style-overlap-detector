@@ -17,25 +17,27 @@ export class StyleOverlapAnalyzer {
 
         ast.stylesheet?.rules.forEach((rule) => {
             if (rule.type === 'rule') {
-                const selectorText = rule.selectors?.join(', ') || '';
+                const ruleSelectors = rule.selectors || [];
 
-                if (this._options.whitelist?.includes(selectorText)) {
-                    return;
-                }
+                ruleSelectors.forEach((selector) => {
+                    if (this._options.whitelist?.includes(selector)) {
+                        return;
+                    }
 
-                const position = rule.position;
-                const location = position?.start?.line;
+                    const position = rule.position;
+                    const location = position?.start?.line;
 
-                if (selectors.has(selectorText)) {
-                    const data = selectors.get(selectorText)!;
-                    data.count++;
-                    location && data.locations.push(location);
-                } else {
-                    selectors.set(selectorText, {
-                        count: 1,
-                        locations: location ? [location] : []
-                    });
-                }
+                    if (selectors.has(selector)) {
+                        const data = selectors.get(selector)!;
+                        data.count++;
+                        location && data.locations.push(location);
+                    } else {
+                        selectors.set(selector, {
+                            count: 1,
+                            locations: location ? [location] : []
+                        });
+                    }
+                });
             }
         });
 
