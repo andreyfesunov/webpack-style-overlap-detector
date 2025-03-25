@@ -1,8 +1,9 @@
 import { Compilation, Compiler } from "webpack";
 import { SODLogger, SODLogLevel } from "./logger";
 import { StyleOverlapAnalyzer, StyleOverlapAnalyzerOptions } from "./analyzer";
+import { CodeParserFactory, CodeParserMode, CodeParserOptions } from "./code_parser";
 
-export interface StyleOverlapDetectorOptions extends StyleOverlapAnalyzerOptions {
+export interface StyleOverlapDetectorOptions extends StyleOverlapAnalyzerOptions, CodeParserOptions {
     readonly mode: SODLogLevel;
 }
 
@@ -23,11 +24,10 @@ export class StyleOverlapDetector {
                 name: 'StyleOverlapDetector',
                 stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE
             }, (assets) => {
-                const cssFiles = Object.keys(assets).filter((asset) => asset.endsWith('.css'));
-                const sources = cssFiles.map((file) => assets[file].source().toString());
-
+                const parse_modes = this._options.parse_modes ?? [CodeParserMode.CSS];
+                const parsers = parse_modes.map((mode) => CodeParserFactory.create(mode));
+                const sources = parsers.map((parser) => parser.parse(assets));
                 const duplicates = this._analyzer.analyze(sources.join('\n'));
-
                 duplicates.forEach((duplicate) => {
                     this._logger.log(duplicate);
                 });
