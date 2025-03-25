@@ -1,4 +1,4 @@
-import { parse } from 'css';
+import { parse } from '@adobe/css-tools';
 
 export interface StyleOverlapAnalyzerOptions {
     readonly whitelist?: readonly string[];
